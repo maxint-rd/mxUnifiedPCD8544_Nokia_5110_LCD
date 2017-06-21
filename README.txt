@@ -4,13 +4,30 @@ This is a library for the Monochrome Nokia 5110 LCD Displays
 
 These displays normally use SPI to communicate. 3 to 5 data-pins are required to  
 interface with the MCU. When using the minimum of three data-pins (DC/DIN/CLK),
-the remaining pins are fixed. Using an I2C interface the display can be connected
-to share the I2C bus (only two pins).
+the remaining pins are fixed. By using the mxUnifiedPCF8574 library for an I2C
+interface or the mxUnified74HC595 library for shift-registers, the display can
+be connected to share the I2C bus (only two pins) or the SPI pins (three wires).
 
-This library is based on the Adafruit PCD8544 Nokia 5110 LCD
-library, but instead of directly using SPI it allows the display to be driven
-via the (shared) I2C bus which only requires two data-lines (SDA and SCL).
+This library is based on the Adafruit PCD8544 Nokia 5110 LCD library, 
+but instead of directly using SPI it allows the display to be driven
+via the expanded pins of an I2C I/O expander or a of a shift-register.
+
+
+Using SPI shift-register
+========================
+The (shared) SPI bus requires three data-lines to connect one or more shift
+registers (SS, MOSI and SCK).
+On the Arduino UNO, Nano and Pro Mini, the pins for (fast) hardware SPI are
+D10, D12 and D13. On the ESP8266 the default SPI pins are GPIO15, GPIO13 and
+GPIO14. When using (slower) software SPI others can be selected too.
+
+
+Using I2C I/O expander
+======================
+The (shared) I2C bus only requires two data-lines (SDA and SCL).
 On the Arduino UNO, Nano and Pro Mini, these can be found on pins A4 and A5.
+On the ESP8266 the default pins are GPIO4 and GPIO5, but others can be
+selected too.
 
 The I2C data is expanded to the recommended 5 pins using the PCF8274 I2C I/O
 expander. A very affordable board and abundantly available board that
@@ -107,13 +124,15 @@ INSTALLATION
 Download the required libraries (see links below).
 Use the Arduino IDE to add the .ZIP library file via the menu.
 Alternatively copy all library files into a folder under your
-arduinosketchfolder>/libraries/ folder and restart the IDE.
+<arduinosketchfolder>/libraries/ folder and restart the IDE.
 
 You will also have to install the Adafruit GFX Graphics core library
-which does all the circles, text, rectangles, etc; as well as Rob 
-Tillaarts PCF8574 library, which is used to drive the PCF8574 chip.
+which does all the circles, text, rectangles, etc; as well as the
+mxUnifiedIO library. Also install either the mxUnifiedPCF8574
+library or the mxUnified74HC595 librraries, which are used
+to drive the PCD8544 LCD chip.
 
-See the included example to learn more about using this library.
+See the included examples to learn more about using this library.
 
 
 TROUBLESHOOTING TIPS
@@ -132,19 +151,26 @@ TROUBLESHOOTING TIPS
 
 LINKS
 =====
-This library:
-    https://github.com/maxint/I2C-PCF8574-PCD8544-Nokia-5110-LCD
-Adafruit GFX Library: 
+Required libraries:
+- This library:
+    https://github.com/maxint-rd/mxUnifiedPCD8544_Nokia_5110_LCD
+- Supporting libraries:
+    https://github.com/maxint-rd/mxUnifiedIO
+    https://github.com/maxint-rd/mxUnifiedPCF8574
+    https://github.com/maxint-rd/mxUnified74HC595
+- Adafruit GFX Library: 
     https://github.com/adafruit/Adafruit-GFX-Library
-Rob Tillaarts PCF8574 library:
+
+For reference:
+- Rob Tillaarts PCF8574 library:
     https://github.com/RobTillaart/Arduino/tree/master/libraries/PCF8574
     https://playground.arduino.cc/Main/PCF8574Class
-Adafruit tutorials:
+- Adafruit tutorials:
     https://learn.adafruit.com/nokia-5110-3310-monochrome-lcd
     https://learn.adafruit.com/adafruit-gfx-graphics-library/overview
-Arduino I2C scanner sketches:
+- Arduino I2C scanner sketches:
     https://playground.arduino.cc/Main/I2cScanner
-The original Adafruit PCD8544 Nokia 5110 LCD SPI library:
+- The original Adafruit PCD8544 Nokia 5110 LCD SPI library:
     https://github.com/adafruit/Adafruit-PCD8544-Nokia-5110-LCD-library
 
 

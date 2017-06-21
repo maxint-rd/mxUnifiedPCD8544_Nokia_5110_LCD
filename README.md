@@ -1,5 +1,5 @@
 # mxUnifiedPCD8544_Nokia_5110_LCD
-mxUnifiedIO device library for Arduino. Device specific driver for the PCD8544 Nokia 5110 LCD display, Derived from the Adafruit GFX library. Use SPI shift-registers or I2C I/O expanders via the mxUnifiedIO API.
+mxUnifiedIO device library for Arduino. Device specific driver for the PCD8544 Nokia 5110 LCD display, derived from the Adafruit GFX library. Use SPI shift-registers or I2C I/O expanders via the mxUnifiedIO API.
 
 DESCRIPTION
 ===========
@@ -13,7 +13,7 @@ be connected to share the I2C bus (only two pins) or the SPI pins (three wires).
 
 This library is based on the Adafruit PCD8544 Nokia 5110 LCD library, 
 but instead of directly using SPI it allows the display to be driven
-via the expanded pins of an I2C I/O expander or a of a shift-register.
+via the expanded pins of an I2C I/O expander or a shift-register.
 
 
 Using SPI shift-register

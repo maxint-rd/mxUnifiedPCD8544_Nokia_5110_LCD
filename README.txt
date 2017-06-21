@@ -8,9 +8,9 @@ the remaining pins are fixed. By using the mxUnifiedPCF8574 library for an I2C
 interface or the mxUnified74HC595 library for shift-registers, the display can
 be connected to share the I2C bus (only two pins) or the SPI pins (three wires).
 
-This library is based on the Adafruit PCD8544 Nokia 5110 LCD library, 
-but instead of directly using SPI it allows the display to be driven
-via the expanded pins of an I2C I/O expander or a of a shift-register.
+This library is based on the Adafruit PCD8544 Nokia 5110 LCD library, but 
+instead of directly using SPI it allows the display to be driven via the 
+expanded pins of an I2C I/O expander or a shift-register.
 
 
 Using SPI shift-register

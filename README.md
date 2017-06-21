@@ -44,6 +44,7 @@ Module Pinout
 =============
 
 Nokia 5110 LCD Display module:
+```
      +------------------+
      |     ........     |
      | +--------------+ |
@@ -66,8 +67,10 @@ Pin Description
  6.  3.3V-------- VCC
  7.  LIGHT------- backlight control terminal
  8.  GND--------- power negative
+```
 
 PCF8574 I2C LCD driver:
+```
      +---------------------+
 -SCL-+   ::: +---+         |
 -SCA-+   +-+ |PCF| ''': LED+-
@@ -94,6 +97,7 @@ Pin Description
 14.  P7
 15.  VCC (for LED)
 16.  P3 (connected via LED jumper to J3Y (=S8050) transistor, sink)
+```
 
 See the included example for suggested connections of the display module
 to the I2C LCD driver interface.

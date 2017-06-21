@@ -160,25 +160,25 @@ LINKS
 =====
 Required libraries:
 - This library:
-    https://github.com/maxint-rd/mxUnifiedPCD8544_Nokia_5110_LCD
+    * https://github.com/maxint-rd/mxUnifiedPCD8544_Nokia_5110_LCD
 - Supporting libraries:
-    https://github.com/maxint-rd/mxUnifiedIO
-    https://github.com/maxint-rd/mxUnifiedPCF8574
-    https://github.com/maxint-rd/mxUnified74HC595
+    * https://github.com/maxint-rd/mxUnifiedIO
+    * https://github.com/maxint-rd/mxUnifiedPCF8574
+    * https://github.com/maxint-rd/mxUnified74HC595
 - Adafruit GFX Library: 
-    https://github.com/adafruit/Adafruit-GFX-Library
+    * https://github.com/adafruit/Adafruit-GFX-Library
 
 For reference:
 - Rob Tillaarts PCF8574 library:
-    https://github.com/RobTillaart/Arduino/tree/master/libraries/PCF8574
-    https://playground.arduino.cc/Main/PCF8574Class
+    * https://github.com/RobTillaart/Arduino/tree/master/libraries/PCF8574
+    * https://playground.arduino.cc/Main/PCF8574Class
 - Adafruit tutorials:
-    https://learn.adafruit.com/nokia-5110-3310-monochrome-lcd
-    https://learn.adafruit.com/adafruit-gfx-graphics-library/overview
+    * https://learn.adafruit.com/nokia-5110-3310-monochrome-lcd
+    * https://learn.adafruit.com/adafruit-gfx-graphics-library/overview
 - Arduino I2C scanner sketches:
-    https://playground.arduino.cc/Main/I2cScanner
+    * https://playground.arduino.cc/Main/I2cScanner
 - The original Adafruit PCD8544 Nokia 5110 LCD SPI library:
-    https://github.com/adafruit/Adafruit-PCD8544-Nokia-5110-LCD-library
+    * https://github.com/adafruit/Adafruit-PCD8544-Nokia-5110-LCD-library
 
 
 LICENSE

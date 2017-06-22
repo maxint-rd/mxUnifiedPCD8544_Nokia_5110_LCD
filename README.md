@@ -14,6 +14,10 @@ be connected to share the I2C bus (only two pins) or the SPI pins (three wires).
 This library is based on the Adafruit PCD8544 Nokia 5110 LCD library, 
 but instead of directly using SPI it allows the display to be driven
 via the expanded pins of an I2C I/O expander or a shift-register.
+Please note that generating software SPI using the expanded pins of a serial
+driven I/O expander or shiftregister is notably slower than a direct connection.
+The pcd_test example has been adapted to include measurements of time spent per
+display test. You can use these to compare the different ways to drive the display.
 
 
 Using SPI shift-register

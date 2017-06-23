@@ -1,5 +1,5 @@
 # mxUnifiedPCD8544_Nokia_5110_LCD
-mxUnifiedIO device library for Arduino. Device specific driver for the PCD8544 Nokia 5110 LCD display, derived from the Adafruit GFX library. Use SPI shift-registers or I2C I/O expanders via the mxUnifiedIO API.
+mxUnifiedIO device library for Arduino. Device specific driver for the PCD8544 Nokia 5110 LCD display, derived from the Adafruit GFX library. Use SPI shift registers or I2C I/O expanders via the mxUnifiedIO API.
 
 DESCRIPTION
 ===========
@@ -8,19 +8,19 @@ This is a library for the Monochrome Nokia 5110 LCD Displays
 These displays normally use SPI to communicate. 3 to 5 data-pins are required to  
 interface with the MCU. When using the minimum of three data-pins (DC/DIN/CLK),
 the remaining pins are fixed. By using the mxUnifiedPCF8574 library for an I2C
-interface or the mxUnified74HC595 library for shift-registers, the display can
+interface or the mxUnified74HC595 library for shift registers, the display can
 be connected to share the I2C bus (only two pins) or the SPI pins (three wires).
 
 This library is based on the Adafruit PCD8544 Nokia 5110 LCD library, 
 but instead of directly using SPI it allows the display to be driven
-via the expanded pins of an I2C I/O expander or a shift-register.
+via the expanded pins of an I2C I/O expander or a shift register.
 Please note that generating software SPI using the expanded pins of a serial
 driven I/O expander or shiftregister is notably slower than a direct connection.
 The pcd_test example has been adapted to include measurements of time spent per
 display test. You can use these to compare the different ways to drive the display.
 
 
-Using SPI shift-register
+Using SPI shift register
 ========================
 The (shared) SPI bus requires three data-lines to connect one or more shift
 registers (SS, MOSI and SCK).

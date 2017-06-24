@@ -122,6 +122,7 @@ TROUBLESHOOTING TIPS
 - Check if all data-pins between display and interface modules are properly connected, according the pins as defined in your sketch.
 - Use a multimeter to check pin voltages. Note: most Nokia 5110 and PCF8574 modules are both 3.3V and 5V complient. However, the
   contrast level on some 5110 modules needs to be higher when powered by 3.3V.
+- This library was tested to work fine on ESP8266, ATmega328 and ATmega168. However, the ATmega168 is limited in memory (only 1K RAM and 16K flash). On the 168 the HC595_pcd_test example worked only when disabling bitmap and text testing. Unfortunately for I2C more memory is required. The Adafruit based library is just too large for that MCU. To use the Nokia display via I2C on the ATmega168, the Sparkfun code may prove more succesful.
   
 
 LINKS

@@ -22,45 +22,80 @@ https://github.com/maxint-rd/I2C-PCF8574-PCD8544-Nokia-5110-LCD
 #include <mxUnified74HC595.h>
 #include <mxUnifiedPCD8544.h>
 
-// I2C to SPI via PCF8574 interface (slower updates, less pins):
-// address (LCD interface: 0x20-0x27 selectable by connecting pads, all open=0x27)
-// pcf-P7 - 5. Serial clock out (SCLK, CLK)
-// pcf-P6 - 4. Serial data out (DIN)
-// pcf-P5 - 3. Data/Command select (D/C, DC)
-// pcf-P4 - 2. LCD chip select (CS, CE), can be set to -1 if not used (tie line low)
-// pcf-P2 - 1. LCD reset (RST), can be set to -1 if not used (tie line high or to reset of MCU)
-// pcf-P3 - 7. Backlight control (LIGHT), not used in i2c display constructor
-//mxUnified74HC595 unio = mxUnified74HC595();                  // use hardware SPI pins, no cascading
-mxUnified74HC595 unio = mxUnified74HC595(2);               // use hardware SPI pins, two cascaded shift-registers (slightly slower, but more pins)
+// The 74HC595 shift register requires three pins plus VCC/GND
+/* 
+Pinout 74HC595 shift register DIP and SMD model:
+
+     +--v--+          PINS 1-8       PINS 9-16
+  1 -+     +- 16      1: output Qb   16: VCC
+  2 -+     +- 15      2: output Qc   15: output Qa   - expanded pin P0
+  3 -+     +- 14      3: output Qd   14: Serial SER  - connect to SPI-MOSI
+  4 -+     +- 13      4: output Qe   13: Enable OE   - active low, so connect to GND
+  5 -+     +- 12      5: output Qf   12: Latch RCLK  - connect to SPI-SS
+  6 -+     +- 11      6: output Qg   11: Clock SRCLK - connect to SPI-SCK
+  7 -+     +- 10      7: output Qh   10: Clear SRCLR - active low, so connect to VCC
+  8 -+     +- 9       8: GND          9: Cascade SER Qh' - to SER of next chip
+     +-----+
+*/
+
+// The shift register can be connected to the hardware SPI pin for best speed.
+// Default pins for ESP8266:   SS=15, MOSI=13, SCLK=14
+// Default pins for ATmega328: SS=10, MOSI=11, SCLK=13
+// Note with hardware SPI MISO pins isn't used but will still be read
+// and written to during SPI transfer. Be careful when sharing these pins!
+
+// Software SPI pins are slower, but offer pin-freedom
+// Suggested pins for ESP-01: SS=3 (RX), MOSI=2, SCLK=1
+
+mxUnified74HC595 unio = mxUnified74HC595();                  // use hardware SPI pins, no cascading
+//mxUnified74HC595 unio = mxUnified74HC595(2);               // use hardware SPI pins, two cascaded shift-registers (slightly slower, but more pins)
 //mxUnified74HC595 unio = mxUnified74HC595(10, 11, 13);      // alternative software SPI pins: SS, MOSI, SCLK, no cascading (slow, but pin-freedom)
 //mxUnified74HC595 unio = mxUnified74HC595(10, 11, 13, 2);   // alternative software SPI pins: SS, MOSI, SCLK, three cascaded shift-registers (slow, but pin-freedom)
-mxUnifiedPCD8544 display = mxUnifiedPCD8544(&unio, 1, 2, 3, 4, 5);
+//mxUnified74HC595 unio = mxUnified74HC595(3, 2, 0);      // alternative software SPI pins for ESP-01: SS, MOSI, SCLK, no cascading (slow, but pin-freedom)
+//mxUnified74HC595 unio = mxUnified74HC595(3, 2, 0, 3);      // alternative software SPI pins for ESP-01: SS, MOSI, SCLK, three cascaded shift-registers (slow, but pin-freedom)
+
+/* 
+Pinout Nokia 5110 PCD8544 monochrome LCD module:
+     +------------------+
+     |     ........     |
+     | +--------------+ |
+     | +--------------+ |
+     | |              | |
+     | |              | |
+     | |              | |
+     | |              | |
+     | +--------------+ |
+     |     ........     |
+     +------------------+
+           12345678
+
+Pin Description
+ 1.  RST--------- LCD reset
+ 2.  CE---------- LCD chip selection
+ 3.  DC---------- Data/Command select
+ 4.  DIN--------- Serial data line
+ 5.  CLK--------- Serial Clock
+ 6.  3.3V-------- VCC
+ 7.  LIGHT------- Backlight control terminal
+ 8.  GND--------- Power negative
+
+*/
+
+// The easiest way to connect the Nokia 5110 to the 74HC595 shift register on a
+// breadboard is to use pins P1-P5 on a row and add wires to GND, P0->Back-light and VCC.
+mxUnifiedPCD8544 display = mxUnifiedPCD8544(&unio, 1, 2, 3, 4, 5;         // Nokia 5110: CLK=P1, DIN=P2, DC=P3, CE=P4, RST=P5 (Back-light=P0)
 //mxUnifiedPCD8544 display = mxUnifiedPCD8544(&unio, 9, 10, 11, 12, 13);
 //mxUnifiedPCD8544 display = mxUnifiedPCD8544(&unio, 17, 18, 19, 20, 21);
 //mxUnifiedPCD8544 display = mxUnifiedPCD8544(&unio, 25, 26, 27, 28, 29);
 
-// Software SPI (slower updates, more flexible pin options):
-// pin 7 - Serial clock out (SCLK)
-// pin 6 - Serial data out (DIN)
-// pin 5 - Data/Command select (D/C)
-// pin 4 - LCD chip select (CS)
-// pin 3 - LCD reset (RST)
-//PCF8574_PCD8544 display = PCF8574_PCD8544(-1, 7, 6, 5, 4, 3, 2);
-//PCF8574_PCD8544 display = PCF8574_PCD8544(7, 6, 5, 4, 3);
 
-
-// Hardware SPI (faster, but must use certain hardware pins):
-// SCK is LCD serial clock (SCLK) - this is pin 13 on Arduino Uno
-// MOSI is LCD DIN - this is pin 11 on an Arduino Uno
-// pin 5 - Data/Command select (D/C)
-// pin 4 - LCD chip select (CS)
-// pin 3 - LCD reset (RST)
-// PCF8574_PCD8544 display = Adafruit_PCD8544(5, 4, 3);
-// Note with hardware SPI MISO and SS pins aren't used but will still be read
-// and written to during SPI transfer.  Be careful sharing these pins!
-
-// set OPT_DRAWBITMAP to 0 to skip bitmap testing, eg. when using an 168 pro-mini which has insufficient memory
+// NOTE: Set OPT_TEXTDISPLAY and OPT_DRAWBITMAP to 0 when using an ATmega168 pro-mini.
+// This example barely fits in the ATmega168 which has 16K flash and 1K RAM memory.
+// (The ATmega328 version of the pro-mini has 32K flash and 2K RAM memory).
+// Those settings will skip text display testing and bitmap testing, to make it just.
+#define OPT_TEXTDISPLAY 1
 #define OPT_DRAWBITMAP 1
+
 #if(OPT_DRAWBITMAP)
 #define NUMFLAKES 10
 #define XPOS 0
@@ -213,6 +248,7 @@ void setup()
   delayBlink(2000);
   display.clearDisplay();
 
+#if(OPT_TEXTDISPLAY)
   // text display tests
   display.setTextSize(1);
   display.setTextColor(BLACK);
@@ -233,12 +269,13 @@ void setup()
   display.setTextSize(1);
   display.setTextColor(BLACK);
   display.setCursor(0,0);
-  display.println("Rotation");
+  display.println(F("Rotation"));
   display.setTextSize(2);
-  display.println("Example!");
+  display.println(F("Example!"));
   display.display();
   serialTimeSpent(25);
   delayBlink(2000);
+#endif
 
   // revert back to no rotation
   display.setRotation(0);
@@ -256,12 +293,14 @@ void setup()
   serialTimeSpent(30);
   delayBlink(1000); 
   display.invertDisplay(false);
+/* too large for 168
   serialTimeSpent(31);
   delayBlink(1000); 
   display.invertDisplay(true);
   delayBlink(500); 
   display.invertDisplay(false);
   delayBlink(500); 
+*/
 
   // draw many lines
   // Note: calling the display() method after each line takes most time in the I2C library

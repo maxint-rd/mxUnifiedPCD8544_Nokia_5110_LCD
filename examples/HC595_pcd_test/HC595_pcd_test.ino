@@ -57,28 +57,17 @@ mxUnified74HC595 unio = mxUnified74HC595();                  // use hardware SPI
 /* 
 Pinout Nokia 5110 PCD8544 monochrome LCD module:
      +------------------+
-     |     ........     |
-     | +--------------+ |
-     | +--------------+ |
-     | |              | |
-     | |              | |
-     | |              | |
-     | |              | |
-     | +--------------+ |
-     |     ........     |
+     |     ........     |   Pin Description
+     | +--------------+ |   1.  RST--------- LCD reset
+     | +--------------+ |   2.  CE---------- LCD chip selection
+     | |              | |   3.  DC---------- Data/Command select
+     | |              | |   4.  DIN--------- Serial data line
+     | |              | |   5.  CLK--------- Serial Clock
+     | |              | |   6.  3.3V-------- VCC
+     | +--------------+ |   7.  LIGHT------- Backlight control terminal
+     |     ........     |   8.  GND--------- Power negative
      +------------------+
            12345678
-
-Pin Description
- 1.  RST--------- LCD reset
- 2.  CE---------- LCD chip selection
- 3.  DC---------- Data/Command select
- 4.  DIN--------- Serial data line
- 5.  CLK--------- Serial Clock
- 6.  3.3V-------- VCC
- 7.  LIGHT------- Backlight control terminal
- 8.  GND--------- Power negative
-
 */
 
 // The easiest way to connect the Nokia 5110 to the 74HC595 shift register on a
@@ -167,9 +156,6 @@ void setup()
 
   uint32_t tStart=millis();
   unio.begin(); // regular begin() using default settings
-  //unio.begin(0x27, 1000000L, 14, 13);   // Only ESP8266: begin() using different speed and other GPIO pins (regular: SDA=GPIO4, SCL=GPIO5)
-                                     // Note: not all ESP8266 pins are equally usable, eg. pins 0, 2 and 15 have boot conditions. 
-                                     // For ESP-01 the serial pins can be used: SDA on GPIO1 (TX) and SCL on GPIO3 (RX), 
   display.begin();  // regular begin() using default settings
   serialTimeSpent(1);
   delayBlink(100);

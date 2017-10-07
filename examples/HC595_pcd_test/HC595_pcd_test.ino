@@ -15,8 +15,8 @@ Written by Limor Fried/Ladyada  for Adafruit Industries.
 BSD license, check license.txt for more information
 All text above, and the splash screen must be included in any redistribution
 
-Example sketch adapted by Maxint R&D to demonstrate I2C driven display
-https://github.com/maxint-rd/I2C-PCF8574-PCD8544-Nokia-5110-LCD
+Example sketch adapted by Maxint R&D to demonstrate 74HC595 driven display
+https://github.com/maxint-rd/mxUnifiedPCD8544_Nokia_5110_LCD
 *********************************************************************/
 
 #include <mxUnified74HC595.h>
@@ -72,7 +72,7 @@ Pinout Nokia 5110 PCD8544 monochrome LCD module:
 
 // The easiest way to connect the Nokia 5110 to the 74HC595 shift register on a
 // breadboard is to use pins P1-P5 on a row and add wires to GND, P0->Back-light and VCC.
-mxUnifiedPCD8544 display = mxUnifiedPCD8544(&unio, 1, 2, 3, 4, 5;         // Nokia 5110: CLK=P1, DIN=P2, DC=P3, CE=P4, RST=P5 (Back-light=P0)
+mxUnifiedPCD8544 display = mxUnifiedPCD8544(&unio, 1, 2, 3, 4, 5);         // Nokia 5110: CLK=P1, DIN=P2, DC=P3, CE=P4, RST=P5 (Back-light=P0)
 //mxUnifiedPCD8544 display = mxUnifiedPCD8544(&unio, 9, 10, 11, 12, 13);
 //mxUnifiedPCD8544 display = mxUnifiedPCD8544(&unio, 17, 18, 19, 20, 21);
 //mxUnifiedPCD8544 display = mxUnifiedPCD8544(&unio, 25, 26, 27, 28, 29);

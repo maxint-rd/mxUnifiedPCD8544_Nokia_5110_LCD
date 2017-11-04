@@ -49,8 +49,8 @@ https://github.com/maxint-rd/mxUnifiedPCD8544_Nokia_5110_LCD
 #define BLACK 1
 #define WHITE 0
 
-#define LCDWIDTH 84
-#define LCDHEIGHT 48
+#define PCD8544_LCDWIDTH 84
+#define PCD8544_LCDHEIGHT 48
 
 #define PCD8544_POWERDOWN 0x04
 #define PCD8544_ENTRYMODE 0x02
@@ -101,7 +101,7 @@ class mxUnifiedPCD8544 : public Adafruit_GFX
 	void clearDisplay(void);
   
   void drawPixel(int16_t x, int16_t y, uint16_t color);
-  uint8_t getPixel(int8_t x, int8_t y);
+  uint16_t getPixel(int16_t x, int16_t y);
 
  private:
   int8_t _din, _sclk, _dc, _rst, _cs;

@@ -45,7 +45,7 @@ https://github.com/maxint-rd/mxUnifiedPCD8544_Nokia_5110_LCD
 #include "mxUnifiedPCD8544.h"
 
 // the memory buffer for the LCD
-uint8_t pcd8544_buffer[LCDWIDTH * LCDHEIGHT / 8] = {
+uint8_t pcd8544_buffer[PCD8544_LCDWIDTH * PCD8544_LCDHEIGHT / 8] = {
 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0xC0, 0xE0, 0xF0, 0xF8, 0xFC, 0xFC, 0xFE, 0xFF, 0xFC, 0xE0,
@@ -80,6 +80,7 @@ uint8_t pcd8544_buffer[LCDWIDTH * LCDHEIGHT / 8] = {
 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 
 };
 
+#define lcdPCD8544_swap(a, b) { int16_t t = a; a = b; b = t; }
 
 // reduces how much is refreshed, which speeds it up!
 // originally derived from Steve Evans/JCW's mod but cleaned up and
@@ -87,22 +88,22 @@ uint8_t pcd8544_buffer[LCDWIDTH * LCDHEIGHT / 8] = {
 //#define enablePartialUpdate
 
 #ifdef enablePartialUpdate
-static uint8_t xUpdateMin, xUpdateMax, yUpdateMin, yUpdateMax;
+static uint8_t lcdPCD8544_xUpdateMin, lcdPCD8544_xUpdateMax, lcdPCD8544_yUpdateMin, lcdPCD8544_yUpdateMax;
 #endif
 
 
 
-static void updateBoundingBox(uint8_t xmin, uint8_t ymin, uint8_t xmax, uint8_t ymax) {
+static void lcdPCD8544_updateBoundingBox(uint8_t xmin, uint8_t ymin, uint8_t xmax, uint8_t ymax) {
 #ifdef enablePartialUpdate
-  if (xmin < xUpdateMin) xUpdateMin = xmin;
-  if (xmax > xUpdateMax) xUpdateMax = xmax;
-  if (ymin < yUpdateMin) yUpdateMin = ymin;
-  if (ymax > yUpdateMax) yUpdateMax = ymax;
+  if (xmin < lcdPCD8544_xUpdateMin) lcdPCD8544_xUpdateMin = xmin;
+  if (xmax > lcdPCD8544_xUpdateMax) lcdPCD8544_xUpdateMax = xmax;
+  if (ymin < lcdPCD8544_yUpdateMin) lcdPCD8544_yUpdateMin = ymin;
+  if (ymax > lcdPCD8544_yUpdateMax) lcdPCD8544_yUpdateMax = ymax;
 #endif
 }
 
 mxUnifiedPCD8544::mxUnifiedPCD8544(mxUnifiedIO *pUniOut, int8_t SCLK, int8_t DIN, int8_t DC,
-    int8_t CS, int8_t RST) : Adafruit_GFX(LCDWIDTH, LCDHEIGHT)
+    int8_t CS, int8_t RST) : Adafruit_GFX(PCD8544_LCDWIDTH, PCD8544_LCDHEIGHT)
 {
 	_pUniOut=pUniOut;
 
@@ -115,7 +116,7 @@ mxUnifiedPCD8544::mxUnifiedPCD8544(mxUnifiedIO *pUniOut, int8_t SCLK, int8_t DIN
 }
 
 mxUnifiedPCD8544::mxUnifiedPCD8544(int8_t SCLK, int8_t DIN, int8_t DC,
-    int8_t CS, int8_t RST) : Adafruit_GFX(LCDWIDTH, LCDHEIGHT)
+    int8_t CS, int8_t RST) : Adafruit_GFX(PCD8544_LCDWIDTH, PCD8544_LCDHEIGHT)
 {
 	_pUniOut=NULL;
 	_din = DIN;
@@ -127,7 +128,7 @@ mxUnifiedPCD8544::mxUnifiedPCD8544(int8_t SCLK, int8_t DIN, int8_t DC,
 }
 
 mxUnifiedPCD8544::mxUnifiedPCD8544(int8_t SCLK, int8_t DIN, int8_t DC,
-    int8_t RST) : Adafruit_GFX(LCDWIDTH, LCDHEIGHT)
+    int8_t RST) : Adafruit_GFX(PCD8544_LCDWIDTH, PCD8544_LCDHEIGHT)
 {
 	_pUniOut=NULL;
   _din = DIN;
@@ -139,7 +140,7 @@ mxUnifiedPCD8544::mxUnifiedPCD8544(int8_t SCLK, int8_t DIN, int8_t DC,
 }
 
 mxUnifiedPCD8544::mxUnifiedPCD8544(int8_t DC, int8_t CS, int8_t RST):
-  Adafruit_GFX(LCDWIDTH, LCDHEIGHT)
+  Adafruit_GFX(PCD8544_LCDWIDTH, PCD8544_LCDHEIGHT)
 {
 	_pUniOut=NULL;
   // -1 for din and sclk specify using hardware SPI
@@ -157,43 +158,66 @@ void mxUnifiedPCD8544::drawPixel(int16_t x, int16_t y, uint16_t color) {
   if ((x < 0) || (x >= _width) || (y < 0) || (y >= _height))
     return;
 
-  int16_t t;
+  //int16_t t;
   switch(rotation){
     case 1:
-      t = x;
-      x = y;
-      y =  LCDHEIGHT - 1 - t;
+      //t = x;
+      //x = y;
+      //y =  PCD8544_LCDHEIGHT - 1 - t;
+      lcdPCD8544_swap(x, y);
+	    y = PCD8544_LCDHEIGHT - y - 1;
       break;
     case 2:
-      x = LCDWIDTH - 1 - x;
-      y = LCDHEIGHT - 1 - y;
+      x = PCD8544_LCDWIDTH - 1 - x;
+      y = PCD8544_LCDHEIGHT - 1 - y;
       break;
     case 3:
-      t = x;
-      x = LCDWIDTH - 1 - y;
-      y = t;
+      //t = x;
+      //x = PCD8544_LCDWIDTH - 1 - y;
+      //y = t;
+      lcdPCD8544_swap(x, y);
+	    x = PCD8544_LCDWIDTH - x - 1;
       break;
   }
 
-  if ((x < 0) || (x >= LCDWIDTH) || (y < 0) || (y >= LCDHEIGHT))
+  if ((x < 0) || (x >= PCD8544_LCDWIDTH) || (y < 0) || (y >= PCD8544_LCDHEIGHT))
     return;
 
   // x is which column
   if (color) 
-    pcd8544_buffer[x+ (y/8)*LCDWIDTH] |= _BV(y%8);  
+    pcd8544_buffer[x+ (y/8)*PCD8544_LCDWIDTH] |= _BV(y%8);  
   else
-    pcd8544_buffer[x+ (y/8)*LCDWIDTH] &= ~_BV(y%8); 
+    pcd8544_buffer[x+ (y/8)*PCD8544_LCDWIDTH] &= ~_BV(y%8); 
 
-  updateBoundingBox(x,y,x,y);
+  lcdPCD8544_updateBoundingBox(x,y,x,y);
 }
 
 
 // the most basic function, get a single pixel
-uint8_t mxUnifiedPCD8544::getPixel(int8_t x, int8_t y) {
-  if ((x < 0) || (x >= LCDWIDTH) || (y < 0) || (y >= LCDHEIGHT))
-    return 0;
+uint16_t mxUnifiedPCD8544::getPixel(int16_t x, int16_t y) {
+  if ((x < 0) || (x >= _width) || (y < 0) || (y >= _height))
+    return WHITE;
 
-  return (pcd8544_buffer[x+ (y/8)*LCDWIDTH] >> (y%8)) & 0x1;  
+  // check rotation, move pixel around if necessary
+  switch (getRotation()) {
+  case 1:		// 90 degrees counter clockwise from 0
+    lcdPCD8544_swap(x, y);
+    y = PCD8544_LCDHEIGHT - y - 1;
+    break;
+  case 2:
+    x = PCD8544_LCDWIDTH - x - 1;
+    y = PCD8544_LCDHEIGHT - y - 1;
+    break;
+  case 3:		// 270 degrees counter clockwise (is 90 degrees clockwise) from 0
+    lcdPCD8544_swap(x, y);
+    x = PCD8544_LCDWIDTH - x - 1;
+    break;
+  }
+
+  if ((x < 0) || (x >= PCD8544_LCDWIDTH) || (y < 0) || (y >= PCD8544_LCDHEIGHT))
+    return WHITE;
+
+  return (pcd8544_buffer[x+ (y/8)*PCD8544_LCDWIDTH] >> (y%8)) & 0x1;  
 }
 
 void mxUnifiedPCD8544::begin(uint8_t contrast, uint8_t bias)
@@ -245,9 +269,10 @@ void mxUnifiedPCD8544::begin(uint8_t contrast, uint8_t bias)
       pnMode(_cs, OUTPUT);
 
   // toggle RST low to reset
+  // MMOLE: according datasheet pg15 reset should be issued within 100ms after power on Vdd
   if (_rst > 0) {
     digitWrite(_rst, LOW);
-    delay(500);
+    delay(100);				// MMOLE: was 500ms, which seems unnecessary long
     digitWrite(_rst, HIGH);
   }
 
@@ -277,7 +302,7 @@ void mxUnifiedPCD8544::begin(uint8_t contrast, uint8_t bias)
 
   // set up a bounding box for screen updates
 
-  updateBoundingBox(0, 0, LCDWIDTH-1, LCDHEIGHT-1);
+  lcdPCD8544_updateBoundingBox(0, 0, PCD8544_LCDWIDTH-1, PCD8544_LCDHEIGHT-1);
   // Push out pcd8544_buffer to the Display (will show the AFI logo)
   display();
 }
@@ -379,10 +404,10 @@ void mxUnifiedPCD8544::display(void) {
   for(p = 0; p < 6; p++) {
 #ifdef enablePartialUpdate
     // check if this page is part of update
-    if ( yUpdateMin >= ((p+1)*8) ) {
+    if ( lcdPCD8544_yUpdateMin >= ((p+1)*8) ) {
       continue;   // nope, skip it!
     }
-    if (yUpdateMax < p*8) {
+    if (lcdPCD8544_yUpdateMax < p*8) {
       break;
     }
 #endif
@@ -391,12 +416,12 @@ void mxUnifiedPCD8544::display(void) {
 
 
 #ifdef enablePartialUpdate
-    col = xUpdateMin;
-    maxcol = xUpdateMax;
+    col = lcdPCD8544_xUpdateMin;
+    maxcol = lcdPCD8544_xUpdateMax;
 #else
     // start at the beginning of the row
     col = 0;
-    maxcol = LCDWIDTH-1;
+    maxcol = PCD8544_LCDWIDTH-1;
 #endif
 
     command(PCD8544_SETXADDR | col);
@@ -412,7 +437,7 @@ void mxUnifiedPCD8544::display(void) {
 	    for(; col <= maxcol; col++)
 	    {
 	  		//Serial.print(F("W"));
-		  	unioWrite(pcd8544_buffer[(LCDWIDTH*p)+col], false);
+		  	unioWrite(pcd8544_buffer[(PCD8544_LCDWIDTH*p)+col], false);
     		uCnt++;
     		if(uCnt%2==0 && col<maxcol-1)
    			{	// can't send too much in one go because I2C has limited buffer (32 bytes) on both ATmega and ESP8266
@@ -444,7 +469,7 @@ void mxUnifiedPCD8544::display(void) {
 	    if (_cs > 0)
 	      digitWrite(_cs, LOW);
 	    for(; col <= maxcol; col++) {
-	      spiWrite(pcd8544_buffer[(LCDWIDTH*p)+col]);
+	      spiWrite(pcd8544_buffer[(PCD8544_LCDWIDTH*p)+col]);
 	    }
 	    if (_cs > 0)
 	      digitWrite(_cs, HIGH);
@@ -454,10 +479,10 @@ void mxUnifiedPCD8544::display(void) {
   if(!isUniOut())	// MMOLE: also no idea, lets optimize and skip this.
   	command(PCD8544_SETYADDR );  // no idea why this is necessary but it is to finish the last byte?
 #ifdef enablePartialUpdate
-  xUpdateMin = LCDWIDTH - 1;
-  xUpdateMax = 0;
-  yUpdateMin = LCDHEIGHT-1;
-  yUpdateMax = 0;
+  lcdPCD8544_xUpdateMin = PCD8544_LCDWIDTH - 1;
+  lcdPCD8544_xUpdateMax = 0;
+  lcdPCD8544_yUpdateMin = PCD8544_LCDHEIGHT-1;
+  lcdPCD8544_yUpdateMax = 0;
 #endif
 }
 
@@ -471,8 +496,8 @@ void mxUnifiedPCD8544::invertDisplay(boolean i)
 
 // clear everything
 void mxUnifiedPCD8544::clearDisplay(void) {
-  memset(pcd8544_buffer, 0, LCDWIDTH*LCDHEIGHT/8);
-  updateBoundingBox(0, 0, LCDWIDTH-1, LCDHEIGHT-1);
+  memset(pcd8544_buffer, 0, PCD8544_LCDWIDTH*PCD8544_LCDHEIGHT/8);
+  lcdPCD8544_updateBoundingBox(0, 0, PCD8544_LCDWIDTH-1, PCD8544_LCDHEIGHT-1);
   cursor_y = cursor_x = 0;
 }
 

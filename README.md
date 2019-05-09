@@ -20,7 +20,7 @@ Using I2C I/O expander
 ======================
 The (shared) I2C bus only requires two data-lines (SDA and SCL). On the Arduino UNO, Nano and Pro Mini, these can be found on pins A4 and A5. On the ESP8266 the default pins are GPIO4 and GPIO5, but others can be selected too.
 
-The I2C data is expanded to the recommended 5 pins using the PCF8274 I2C I/O expander. A very affordable board and abundantly available board that features a PCF8274 chip is the I2C backpack that is most commonly used as interface to the 1602 and 2004 character LCD display modules. Using only slightly different connections this interface board can be used to connect the 48-84 Nokia 5110 dot-matrix LCD display module.
+The I2C data is expanded to the recommended 5 pins using the PCF8574 I2C I/O expander. A very affordable and abundantly available board that features a PCF8574 chip is the I2C backpack module, whihc is most commonly used as interface to the 1602 and 2004 character LCD display modules. Using only slightly different connections this interface board can be used to connect the 48x84 Nokia 5110 dot-matrix LCD display module.
 
 
 Module Pinout
@@ -138,9 +138,6 @@ Required libraries:
     * https://github.com/adafruit/Adafruit-GFX-Library
 
 For reference:
-- Rob Tillaarts PCF8574 library:
-    * https://github.com/RobTillaart/Arduino/tree/master/libraries/PCF8574
-    * https://playground.arduino.cc/Main/PCF8574Class
 - Adafruit tutorials:
     * https://learn.adafruit.com/nokia-5110-3310-monochrome-lcd
     * https://learn.adafruit.com/adafruit-gfx-graphics-library/overview
